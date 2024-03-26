@@ -5,11 +5,17 @@ const { sendToken } = require("../utils/sendToken");
 
 exports.homepage = catchAsyncErrors(async (req, res, next) => {
     try {
-        res.json({ message: "homepage" });
+        res.json({ message: "Secure Homepage!" });
 
     } catch (error) {
         res.json(error)
     }
+})
+
+exports.currentUser = catchAsyncErrors(async (req, res, next) => {
+    const student = await Student.findById(req.id).exec();
+    res.json({ student});
+
 })
 
 exports.studentsignup = catchAsyncErrors(async (req, res, next) => {
@@ -34,10 +40,11 @@ exports.studentsignin = catchAsyncErrors(async (req, res, next) => {
     if (!isMatch) return next(new ErrorHandler("Wrong credentials", 500));
 
 
-    sendToken(student, 20, res);
+    sendToken(student, 200, res);
 
 });
 
 exports.studentsignout = catchAsyncErrors(async (req, res, next) => {
-
+    res.clearCookie("token");
+    res.json({message: "Successfully signout!"})
 })

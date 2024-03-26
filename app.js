@@ -13,7 +13,18 @@ app.use(logger("dev")); //tiny
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
+//session and cookies
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+app.use(session({
+    secret: process.env.EXPRESS_SESSION_SECRET,
+    resave: true,
+    saveUninitialized: true,
+    // cookie: {
+    //     maxAge: 1000 * 60 * 60 * 24 * 7
+    // }
+}))
+app.use(cookieParser());
 
 
 //routes

@@ -48,3 +48,27 @@ exports.studentsignout = catchAsyncErrors(async (req, res, next) => {
     res.clearCookie("token");
     res.json({message: "Successfully signout!"})
 })
+
+exports.studentsendmail = catchAsyncErrors(async (req, res, next) => {
+    try {
+        const student = await Student.findOne({ email: req.body.email }).exec();
+
+        if (!student)
+        return next(
+            new ErrorHandler(
+                "User not found with this email address",
+                404
+            )
+        )
+
+        const url = `${req.protocol}://${req.get("host")}/student/forget-link/${student._id}`;
+                
+        sendmail(req, res, next, url);
+        
+
+        res.json({ student, url });
+
+    } catch (error) {
+        res.json(error)
+    }
+})

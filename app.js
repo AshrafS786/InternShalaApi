@@ -38,8 +38,7 @@ const ErrorHandler = require("./utils/ErrorHandler");
 const { generatedErrors } = require("./middlewares/errors");
 
 app.all("*", (req, res, next) => {
-    next(new ErrorHandler
-        (`Requested URL Not Found: ${req.url}`, 404));
+    next(new ErrorHandler(`Requested URL Not Found: ${req.url}`, 404));
 })
 app.use(generatedErrors)
 

@@ -4,6 +4,29 @@ const jwt = require('jsonwebtoken');
 
 const studentModel = new mongoose.Schema(
     {
+        firstname: {
+            type: String,
+            required: [true, "First Name is required"],
+            minLength: [3, "First name should be atleast 3 character long!"]
+        },
+        lastname: {
+            type: String,
+            required: [true, "Last Name is required"],
+            minLength: [3, "Last name should be atleast 3 character long!"]
+        },
+        contact: {
+            type: String,
+            required: [true, "Contact is required"],
+            maxLength: [10, "Contact must not exceed 10 characters!"],
+            minLength: [10, "Contact should be atleast 10 characters!"],
+        },
+        city: {
+            type: String,
+            required: [true, "City Name is required"],
+            minLength: [3, "City should be atleast 3 character long!"]
+        },
+        gender: { type: String, enum: ["Male", "Female", "Others"] },
+
         email: {
             type: String,
             unique: true,
@@ -19,25 +42,45 @@ const studentModel = new mongoose.Schema(
             maxLength: [20, "Password must be at least 20 characters"],
             // match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{6,20}$/, "Password must contain at least one number, one lowercase letter, one uppercase letter, one special character and at least 6 characters"]
         },
-        
-    }, {timestamps: true}
+        resetPasswordToken: {
+            type: String,
+            default: "0",
+        },
+        avatar: {
+            type: Object,
+            default: {
+                fieldId: "",
+                url: "https://images.unsplash.com/photo-1711211118827-c889adafc9af?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }
+        },
+        resume: {
+            education: [],
+            jobs: [],
+            internships: [],
+            responsibilities: [],
+            courses: [],
+            projects: [],
+            skills: [],
+            accomplishments: [],
+        },
+    }, { timestamps: true }
 )
 
-studentModel.pre("save", function(){
+studentModel.pre("save", function () {
 
-    if(!this.isModified("password")){
+    if (!this.isModified("password")) {
         return;
     }
 
     let salt = bcrypt.genSaltSync(10);
     this.password = bcrypt.hashSync(this.password, salt);
-}) 
+})
 
-studentModel.methods.comparepassword = function(password){
+studentModel.methods.comparepassword = function (password) {
     return bcrypt.compareSync(password, this.password);
-} 
+}
 
-studentModel.methods.getjwttoken = function(){
+studentModel.methods.getjwttoken = function () {
     const token = jwt.sign({
         _id: this._id,
         email: this.email

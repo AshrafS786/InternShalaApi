@@ -25,17 +25,20 @@ app.use(session({
     // }
 }))
 app.use(cookieParser());
-
+// express file-upload
+const fileupload = require("express-fileupload");
+app.use(fileupload())
 
 //routes
-app.use('/', require("./routes/indexRoutes"));
+app.use('/user', require("./routes/indexRoutes"));
+app.use('/resume', require("./routes/resumeRoutes"));
 
 //error handlers
-const ErrorHanler = require("./utils/ErrorHandler");
+const ErrorHandler = require("./utils/ErrorHandler");
 const { generatedErrors } = require("./middlewares/errors");
 
 app.all("*", (req, res, next) => {
-    next(new ErrorHanler
+    next(new ErrorHandler
         (`Requested URL Not Found: ${req.url}`, 404));
 })
 app.use(generatedErrors)

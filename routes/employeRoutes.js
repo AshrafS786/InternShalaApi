@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { homepage, currentEmploye, employesignup, employesignin, employesignout, employesendmail, employeforgetlink, employeresetpassword, employeupdate, employeavatar } = require('../controllers/employeController');
+const { homepage, currentEmploye, employesignup, employesignin, employesignout, employesendmail, employeforgetlink, employeresetpassword, employeupdate, employeavatar, createinternship, readinternship, readsingleinternship, createjob, readjob, readsinglejob } = require('../controllers/employeController');
 const { isAuthenticated } = require('../middlewares/auth');
 
 //GET /
@@ -9,28 +9,54 @@ router.get('/', homepage);
 //POST /employe
 router.post('/current', isAuthenticated, currentEmploye);
 
-//POST /signup
+//POST /employe/signup
 router.post('/signup', employesignup);
 
-//POST /signin
+//POST /employe/signin
 router.post('/signin', employesignin);
 
-//GET /student/signout
+//GET /employe/student/signout
 router.get('/signout', isAuthenticated, employesignout);
 
-//POST /send-mail
+//POST /employe/send-mail
 router.post('/send-mail', employesendmail);
 
-//GET /forget-link/:employeid
+//GET /employe/forget-link/:employeid
 router.get('/forget-link/:id', employeforgetlink);
 
-//POST /reset-password/:employeid
+//POST /employe/reset-password/:employeid
 router.post('/reset-password/:id', isAuthenticated, employeresetpassword);
 
-//POST /update/:employeid
+//POST /employe/update/:employeid
 router.post('/update/:id', isAuthenticated, employeupdate);
 
-//POST /avatar/:employeid
+//POST /employe/avatar/:employeid
 router.post('/avatar/:id', isAuthenticated, employeavatar);
+
+
+//-----------------Internship---------------
+//POST /employe/internship/create
+router.post('/internship/create', isAuthenticated, createinternship);
+
+//POST /employe/internship/read
+router.post('/internship/read', isAuthenticated, readinternship);
+
+//POST /employe/internship/read/:id
+router.post('/internship/read/:id', isAuthenticated, readsingleinternship);
+
+
+//-----------------Job---------------
+//POST /employejob/create
+router.post('/job/create', isAuthenticated, createjob);
+
+//POST /employe/job/read
+router.post('/job/read', isAuthenticated, readjob);
+
+//POST /employe/job/read/:id
+router.post('/job/read/:id', isAuthenticated, readsinglejob);
+
+
+
+
  
 module.exports = router; 

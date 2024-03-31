@@ -1,5 +1,7 @@
 const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
 const Student = require('../models/studentModel')
+const Internship = require('../models/internshipModel')
+const Job = require('../models/jobModel')
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendmail } = require("../utils/nodemailer");
 const { sendToken } = require("../utils/sendToken");
@@ -123,17 +125,46 @@ exports.studentavatar = catchAsyncErrors(async (req, res, next) => {
         await imagekit.deleteFile(student.avatar.fileId)
     }
 
-    const {fileId, url} = await imagekit.upload({
+    const { fileId, url } = await imagekit.upload({
         file: file.data,
         fileName: modifiedFieldName,
     })
 
-    student.avatar = {fileId, url};
+    student.avatar = { fileId, url };
     await student.save();
-    res.status(200).json({ 
+    res.status(200).json({
         success: true,
         message: "Profile Updated Successfully!"
 
-     })
+    })
+
+})
+
+
+//--------------Apply Internship----------------
+exports.applyinternship = catchAsyncErrors(async (req, res, next) => {
+    const student = await Student.findById(req.id).exec();
+    const internship = await Internship.findById(req.params.internshipid).exec();
+
+    student.internships.push(internship._id);
+    internship.students.push(student._id);
+    await student.save();
+    await internship.save();
+
+    res.json({ student, internship });
+
+})
+
+
+//--------------Apply Job----------------
+exports.applyjob = catchAsyncErrors(async (req, res, next) => {
+    const student = await Student.findById(req.id).exec();
+    const job = await Job.findById(req.params.jobid).exec();
+
+    student.jobs.push(job._id);
+    job.students.push(student._id);
+    await student.save();
+    await job.save();
+    res.json({ student, job });
 
 })

@@ -1,5 +1,7 @@
 const { catchAsyncErrors } = require("../middlewares/catchAsyncErrors");
-const Employe = require('../models/employeModel')
+const Employe = require('../models/employeModel');
+const Internship = require("../models/internshipModel");
+const Job = require("../models/jobModel");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { sendmail } = require("../utils/nodemailer");
 const { sendToken } = require("../utils/sendToken");
@@ -137,39 +139,53 @@ exports.employeavatar = catchAsyncErrors(async (req, res, next) => {
 })
 
 
+//-----------------Internship---------------
 
-// exports.employeavatar = catchAsyncErrors(async (req, res, next) => {
-//     const employe = await Employe.findById(req.params.id).exec();
-    
-//     if (!employe) {
-//         return res.status(404).json({ success: false, message: "Employee not found" });
-//     }
+exports.createinternship = catchAsyncErrors(async (req, res, next) => {
+    const employe = await Employe.findById(req.id).exec();
+    const internships = await new Internship(req.body);
+    internships.employe = employe._id;
+    employe.internships.push(internships._id);
+    await internships.save();
+    await employe.save();
+    res.status(201).json({success: true, internships});
+})
 
-//     if (!req.files || !req.files.organizationlogo) {
-//         return res.status(400).json({ success: false, message: "Organization logo file is missing" });
-//     }
+exports.readinternship = catchAsyncErrors(async (req, res, next) => {
+    const {internships} = await Employe.findById(req.id).populate("internships").exec();
+    res.status(200).json({success: true, internships});
+})
 
-//     const file = req.files.organizationlogo;
-    
-//     if (!file.name) {
-//         return res.status(400).json({ success: false, message: "Organization logo file name is missing" });
-//     }
+exports.readsingleinternship = catchAsyncErrors(async (req, res, next) => {
+    const internships = await Internship.findById(req.params.id).exec();
+    res.status(200).json({success: true, internships});
+})
 
-//     const modifiedFieldName = `resumebuilder-${Date.now()}${path.extname(file.name)}`;
 
-//     if (employe.organizationlogo.fileId !== "") {
-//         await imagekit.deleteFile(employe.organizationlogo.fileId);
-//     }
+//-----------------Job---------------
 
-//     const { fileId, url } = await imagekit.upload({
-//         file: file.data,
-//         fileName: modifiedFieldName,
-//     });
+exports.createjob = catchAsyncErrors(async (req, res, next) => {
+    const employe = await Employe.findById(req.id).exec();
+    const jobs = await new Job(req.body);
+    jobs.employe = employe._id;
+    employe.jobs.push(jobs._id);
+    await jobs.save();
+    await employe.save();
+    res.status(201).json({success: true, jobs});
+})
 
-//     employe.organizationlogo = { fileId, url };
-//     await employe.save();
-//     res.status(200).json({ 
-//         success: true,
-//         message: "Profile Updated Successfully!"
-//     });
-// });
+exports.readjob = catchAsyncErrors(async (req, res, next) => {
+    const {jobs} = await Employe.findById(req.id).populate("jobs").exec();
+    res.status(200).json({success: true, jobs});
+})
+
+exports.readsinglejob = catchAsyncErrors(async (req, res, next) => {
+    const jobs = await Job.findById(req.params.id).exec();
+    res.status(200).json({success: true, jobs});
+})
+
+
+
+
+
+

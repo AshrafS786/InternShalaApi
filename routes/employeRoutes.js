@@ -30,7 +30,7 @@ router.post('/reset-password/:id', isAuthenticated, employeresetpassword);
 //POST /update/:employeid
 router.post('/update/:id', isAuthenticated, employeupdate);
 
-//POST /employe/avatar/:employeid
-router.post('/employe/avatar/:id', isAuthenticated, employeavatar);
+//POST /avatar/:employeid
+router.post('/avatar/:id', isAuthenticated, employeavatar);
  
 module.exports = router; 

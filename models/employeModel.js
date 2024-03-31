@@ -43,21 +43,21 @@ const employeModel = new mongoose.Schema(
         organizationname: {
             type: String,
             required: [true, "Organization Name is required"],
-            minLength: [3, "Organization Name should be atleast 3 character long!"]
+            minLength: [3, "Organization Name should be atleast 3 character long!"],
         },
         organizationlogo: {
             type: Object,
             default: {
-                fieldId: "",
-                url: "https://images.unsplash.com/photo-1711211118827-c889adafc9af?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            }
+                fileId: "",
+                url: "https://images.unsplash.com/photo-1548387834-7bf05019e89b?q=80&w=1227&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            },
         },
 
         internship: [{
-            type: mongoose.Schema.Types.ObjectId, ref: 'internship'
+            type: mongoose.Schema.Types.ObjectId, ref: 'internship',
         }],
         jobs: [{
-            type: mongoose.Schema.Types.ObjectId, ref: 'job'
+            type: mongoose.Schema.Types.ObjectId, ref: 'job',
         }],
 
 
@@ -82,7 +82,7 @@ employeModel.methods.getjwttoken = function () {
         _id: this._id,
         email: this.email
     }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE // expires in 24 hours
+        expiresIn: process.env.JWT_EXPIRE 
     });
     return token;
 }

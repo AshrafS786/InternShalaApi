@@ -111,13 +111,15 @@ exports.employeupdate = catchAsyncErrors(async (req, res, next) => {
 
 })
 
+
 exports.employeavatar = catchAsyncErrors(async (req, res, next) => {
     const employe = await Employe.findById(req.params.id).exec();
-    const file = req.files.avatar;
+
+    const file = req.files.organizationlogo;
     const modifiedFieldName = `resumebuilder-${Date.now()}${path.extname(file.name)}`;
 
-    if (employe.avatar.fileId !== "") {
-        await imagekit.deleteFile(employe.avatar.fileId)
+    if (employe.organizationlogo.fileId !== "") {
+        await imagekit.deleteFile(employe.organizationlogo.fileId)
     }
 
     const {fileId, url} = await imagekit.upload({
@@ -125,12 +127,49 @@ exports.employeavatar = catchAsyncErrors(async (req, res, next) => {
         fileName: modifiedFieldName,
     })
 
-    employe.avatar = {fileId, url};
+    employe.organizationlogo = {fileId, url};
     await employe.save();
     res.status(200).json({ 
         success: true,
         message: "Profile Updated Successfully!"
-
      })
 
 })
+
+
+
+// exports.employeavatar = catchAsyncErrors(async (req, res, next) => {
+//     const employe = await Employe.findById(req.params.id).exec();
+    
+//     if (!employe) {
+//         return res.status(404).json({ success: false, message: "Employee not found" });
+//     }
+
+//     if (!req.files || !req.files.organizationlogo) {
+//         return res.status(400).json({ success: false, message: "Organization logo file is missing" });
+//     }
+
+//     const file = req.files.organizationlogo;
+    
+//     if (!file.name) {
+//         return res.status(400).json({ success: false, message: "Organization logo file name is missing" });
+//     }
+
+//     const modifiedFieldName = `resumebuilder-${Date.now()}${path.extname(file.name)}`;
+
+//     if (employe.organizationlogo.fileId !== "") {
+//         await imagekit.deleteFile(employe.organizationlogo.fileId);
+//     }
+
+//     const { fileId, url } = await imagekit.upload({
+//         file: file.data,
+//         fileName: modifiedFieldName,
+//     });
+
+//     employe.organizationlogo = { fileId, url };
+//     await employe.save();
+//     res.status(200).json({ 
+//         success: true,
+//         message: "Profile Updated Successfully!"
+//     });
+// });
